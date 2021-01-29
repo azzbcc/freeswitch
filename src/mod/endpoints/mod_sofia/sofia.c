@@ -3162,6 +3162,7 @@ void *SWITCH_THREAD_FUNC sofia_profile_thread_run(switch_thread_t *thread, void 
 		switch_log_printf(SWITCH_CHANNEL_LOG, SWITCH_LOG_CRIT, "Cannot Open SQL Database [%s]!\n", profile->name);
 		sofia_profile_start_failure(profile, profile->name);
 		sofia_glue_del_profile(profile);
+		su_root_destroy(profile->s_root);
 		goto end;
 	}
 
@@ -3272,6 +3273,7 @@ void *SWITCH_THREAD_FUNC sofia_profile_thread_run(switch_thread_t *thread, void 
 						  "2) The IP the profile is attempting to bind to is not local to this system.\n", profile->name, profile->bindurl);
 		sofia_profile_start_failure(profile, profile->name);
 		sofia_glue_del_profile(profile);
+		su_root_destroy(profile->s_root);
 		goto end;
 	}
 
