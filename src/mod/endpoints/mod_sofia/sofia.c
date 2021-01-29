@@ -3451,8 +3451,6 @@ void *SWITCH_THREAD_FUNC sofia_profile_thread_run(switch_thread_t *thread, void 
 		}
 	}
 
-	sofia_clear_pflag_locked(profile, PFLAG_RUNNING);
-	sofia_clear_pflag_locked(profile, PFLAG_SHUTDOWN);
 	switch_log_printf(SWITCH_CHANNEL_LOG, SWITCH_LOG_NOTICE, "Waiting for worker thread\n");
 
 	if ( worker_thread ) {
