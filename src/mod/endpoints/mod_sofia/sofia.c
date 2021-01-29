@@ -3525,9 +3525,9 @@ void *SWITCH_THREAD_FUNC sofia_profile_thread_run(switch_thread_t *thread, void 
 		config_sofia(SOFIA_CONFIG_RESPAWN, profile->name);
 	}
 
+  end:
 	sofia_profile_destroy(profile);
 
-  end:
 	switch_mutex_lock(mod_sofia_globals.mutex);
 	mod_sofia_globals.threads--;
 	switch_mutex_unlock(mod_sofia_globals.mutex);
