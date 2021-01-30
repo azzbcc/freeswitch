@@ -4661,7 +4661,6 @@ switch_status_t config_sofia(sofia_config_t reload, char *profile_name)
 					} else if (!strcasecmp(var, "sip-capture")) {
 						if (switch_true(val)) {
 							sofia_set_flag(profile, TFLAG_CAPTURE);
-							nua_set_params(profile->nua, TPTAG_CAPT(mod_sofia_globals.capture_server), TAG_END());
 						} else {
 							sofia_clear_flag(profile, TFLAG_CAPTURE);
 						}
