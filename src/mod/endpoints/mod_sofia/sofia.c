@@ -3161,8 +3161,6 @@ void *SWITCH_THREAD_FUNC sofia_profile_thread_run(switch_thread_t *thread, void 
 	if (!sofia_glue_init_sql(profile)) {
 		switch_log_printf(SWITCH_CHANNEL_LOG, SWITCH_LOG_CRIT, "Cannot Open SQL Database [%s]!\n", profile->name);
 		sofia_profile_start_failure(profile, profile->name);
-		sofia_glue_del_profile(profile);
-		su_root_destroy(profile->s_root);
 		goto end;
 	}
 
@@ -3272,8 +3270,6 @@ void *SWITCH_THREAD_FUNC sofia_profile_thread_run(switch_thread_t *thread, void 
 						  "The likely causes for this are:\n" "1) Another application is already listening on the specified address.\n"
 						  "2) The IP the profile is attempting to bind to is not local to this system.\n", profile->name, profile->bindurl);
 		sofia_profile_start_failure(profile, profile->name);
-		sofia_glue_del_profile(profile);
-		su_root_destroy(profile->s_root);
 		goto end;
 	}
 
@@ -3508,6 +3504,7 @@ void *SWITCH_THREAD_FUNC sofia_profile_thread_run(switch_thread_t *thread, void 
 		}
 	}
 
+  end:
 	switch_log_printf(SWITCH_CHANNEL_LOG, SWITCH_LOG_DEBUG, "Write lock %s\n", profile->name);
 	switch_thread_rwlock_wrlock(profile->rwlock);
 
@@ -3527,7 +3524,6 @@ void *SWITCH_THREAD_FUNC sofia_profile_thread_run(switch_thread_t *thread, void 
 		config_sofia(SOFIA_CONFIG_RESPAWN, profile->name);
 	}
 
-  end:
 	sofia_profile_destroy(profile);
 
 	switch_mutex_lock(mod_sofia_globals.mutex);
