@@ -3161,7 +3161,7 @@ void *SWITCH_THREAD_FUNC sofia_profile_thread_run(switch_thread_t *thread, void 
 	if (!sofia_glue_init_sql(profile)) {
 		switch_log_printf(SWITCH_CHANNEL_LOG, SWITCH_LOG_CRIT, "Cannot Open SQL Database [%s]!\n", profile->name);
 		sofia_profile_start_failure(profile, profile->name);
-		goto end;
+		goto db_fail;
 	}
 
 	supported = switch_core_sprintf(profile->pool, "%s%s%spath, replaces", use_100rel ? "precondition, 100rel, " : "", use_timer ? "timer, " : "", use_rfc_5626 ? "outbound, " : "");
@@ -3270,7 +3270,7 @@ void *SWITCH_THREAD_FUNC sofia_profile_thread_run(switch_thread_t *thread, void 
 						  "The likely causes for this are:\n" "1) Another application is already listening on the specified address.\n"
 						  "2) The IP the profile is attempting to bind to is not local to this system.\n", profile->name, profile->bindurl);
 		sofia_profile_start_failure(profile, profile->name);
-		goto end;
+		goto nua_fail;
 	}
 
 	switch_log_printf(SWITCH_CHANNEL_LOG, SWITCH_LOG_DEBUG, "Created agent for %s\n", profile->name);
@@ -3492,6 +3492,7 @@ void *SWITCH_THREAD_FUNC sofia_profile_thread_run(switch_thread_t *thread, void 
 		switch_event_fire(&s_event);
 	}
 
+nua_fail:
 	if (sofia_test_pflag(profile, PFLAG_AUTO_NAT) && switch_nat_get_type()) {
 		if (switch_nat_del_mapping(profile->sip_port, SWITCH_NAT_UDP) == SWITCH_STATUS_SUCCESS) {
 			switch_log_printf(SWITCH_CHANNEL_LOG, SWITCH_LOG_DEBUG, "Deleted UDP nat mapping for %s port %d\n", profile->name, profile->sip_port);
@@ -3504,7 +3505,7 @@ void *SWITCH_THREAD_FUNC sofia_profile_thread_run(switch_thread_t *thread, void 
 		}
 	}
 
-  end:
+db_fail:
 	switch_log_printf(SWITCH_CHANNEL_LOG, SWITCH_LOG_DEBUG, "Write lock %s\n", profile->name);
 	switch_thread_rwlock_wrlock(profile->rwlock);
 
