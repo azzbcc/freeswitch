@@ -37,6 +37,7 @@
 #define FAILED_PROFILE "failed_profile"
 #define SECTION_STR    "configuration"
 
+#ifdef ENABLE_PROFILE_LEAK_CHECK
 static switch_xml_t dynamic_sofia_profile(const char *section, const char *tag_name, const char *key_name,
                                           const char *key_value, switch_event_t *params, void *user_data) {
     /**
@@ -58,6 +59,7 @@ static switch_xml_t dynamic_sofia_profile(const char *section, const char *tag_n
     }
     return switch_xml_parse_str_dynamic(xml_string, SWITCH_TRUE);
 }
+#endif
 
 FST_CORE_BEGIN("./conf")
 FST_MODULE_BEGIN(mod_sofia, test_suites)
@@ -121,6 +123,7 @@ FST_TEST_BEGIN(test_profile_stop) {
 }
 FST_TEST_END()
 
+#ifdef ENABLE_PROFILE_LEAK_CHECK
 /**
  * check memory when profile start failed
  */
@@ -153,6 +156,7 @@ FST_TEST_BEGIN(test_port_in_use) {
     switch_safe_free(stream.data);
 }
 FST_TEST_END()
+#endif
 
 /**
  * finally unload mod_sofia
