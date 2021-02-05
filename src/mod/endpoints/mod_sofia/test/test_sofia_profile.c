@@ -61,7 +61,7 @@ static switch_xml_t dynamic_sofia_profile(const char *section, const char *tag_n
 }
 #endif
 
-FST_CORE_BEGIN("./conf")
+FST_CORE_DB_BEGIN("./conf")
 FST_MODULE_BEGIN(mod_sofia, test_suites)
 
 FST_SETUP_BEGIN() {
