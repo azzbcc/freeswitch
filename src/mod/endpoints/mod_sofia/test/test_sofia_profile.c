@@ -32,12 +32,11 @@
 #include <switch.h>
 #include <test/switch_test.h>
 
-#define SECTION        configuration
-#define KEY_NAME       "sofia.conf"
-#define FAILED_PROFILE "failed_profile"
-#define SECTION_STR    "configuration"
-
 #ifdef ENABLE_PROFILE_LEAK_CHECK
+#define KEY_NAME       "sofia.conf"
+#define SECTION        "configuration"
+#define FAILED_PROFILE "failed_profile"
+
 static switch_xml_t dynamic_sofia_profile(const char *section, const char *tag_name, const char *key_name,
                                           const char *key_value, switch_event_t *params, void *user_data) {
     /**
@@ -54,7 +53,7 @@ static switch_xml_t dynamic_sofia_profile(const char *section, const char *tag_n
                        "    </configuration>"
                        "  </section>"
                        "</document>";
-    if (zstr(tag_name) || !strstr(tag_name, SECTION_STR) || zstr(key_value) || !strstr(key_value, KEY_NAME)) {
+    if (zstr(tag_name) || !strstr(tag_name, SECTION) || zstr(key_value) || !strstr(key_value, KEY_NAME)) {
         return NULL;
     }
     return switch_xml_parse_str_dynamic(xml_string, SWITCH_TRUE);
@@ -62,7 +61,7 @@ static switch_xml_t dynamic_sofia_profile(const char *section, const char *tag_n
 #endif
 
 FST_CORE_DB_BEGIN("./conf")
-FST_MODULE_BEGIN(mod_sofia, test_suites)
+FST_SUITE_BEGIN(mod_sofia_profile)
 
 FST_SETUP_BEGIN() {
     fst_requires_module("mod_sofia");
@@ -130,7 +129,7 @@ FST_TEST_END()
 FST_TEST_BEGIN(test_port_in_use) {
     int sanity;
     sofia_profile_t *profile;
-    const char *profile_name = "normal";
+    const char *profile_name      = "normal";
     switch_stream_handle_t stream = { 0 };
 
     // profile haven't started yet.
@@ -144,7 +143,7 @@ FST_TEST_BEGIN(test_port_in_use) {
     }
 
     // bind profile search function
-    switch_xml_bind_search_function(dynamic_sofia_profile, switch_xml_parse_section_string(SECTION_STR), NULL);
+    switch_xml_bind_search_function(dynamic_sofia_profile, switch_xml_parse_section_string(SECTION), NULL);
 
     // load failed profile
     SWITCH_STANDARD_STREAM(stream);
@@ -171,5 +170,5 @@ FST_TEST_BEGIN(test_unload_mod_sofia) {
 }
 FST_TEST_END()
 
-FST_MODULE_END()
+FST_SUITE_END()
 FST_CORE_END()
