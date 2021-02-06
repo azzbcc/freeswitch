@@ -65,6 +65,7 @@ target_compile_definitions(test_sofia_funcs PRIVATE "-DSWITCH_TEST_BASE_DIR_OVER
 target_link_libraries(test_sofia_funcs mod_sofia ${libraries})
 
 add_executable(test_sofia_profile test/test_sofia_profile.c)
+target_compile_definitions(test_sofia_profile PRIVATE "-DENABLE_PROFILE_LEAK_CHECK")
 target_compile_definitions(test_sofia_profile PRIVATE "-DSWITCH_TEST_BASE_DIR_FOR_CONF=\"${CMAKE_SOURCE_DIR}/test\"")
 target_compile_definitions(test_sofia_profile PRIVATE "-DSWITCH_TEST_BASE_DIR_OVERRIDE=\"${CMAKE_BINARY_DIR}/test\"")
 target_link_libraries(test_sofia_profile mod_sofia ${libraries})
